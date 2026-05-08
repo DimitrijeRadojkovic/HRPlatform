@@ -1,0 +1,45 @@
+# Build folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+
+# Visual Studio
+.vs/
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# NuGet
+packages/
+*.nupkg
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# ASP.NET secrets
+secrets.json
+
+# Publish output
+publish/
+
+# Test results
+TestResults/
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal
