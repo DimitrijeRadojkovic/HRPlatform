@@ -43,5 +43,19 @@ namespace HRPlatform.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("{candidateId}/skills/{skillId}")]
+        public async Task<IActionResult> RemoveSkill(int candidateId, int skillId)
+        {
+            try
+            {
+                await _candidateService.RemoveSkillAsync(candidateId, skillId);
+                return Ok("Skill removed from candidate");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
