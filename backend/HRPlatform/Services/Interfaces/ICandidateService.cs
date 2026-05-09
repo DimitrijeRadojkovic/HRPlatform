@@ -7,5 +7,6 @@ namespace HRPlatform.Services.Interfaces
         Task<CandidateDto> CreateAsync(CreateCandidateDto dto);
         Task AddSkillAsync(int candidateId, int skillId);
         Task RemoveSkillAsync(int candidateId, int skillId);
+        Task DeleteAsync(int id);
     }
 }

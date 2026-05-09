@@ -87,5 +87,16 @@ namespace HRPlatform.Services.Implementations
             _context.CandidateSkills.Remove(candidateSkill);
             await _context.SaveChangesAsync();
         }
+        public async Task DeleteAsync(int id)
+        {
+            var candidate = await _context.Candidates
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (candidate == null)
+                throw new Exception("Candidate not found");
+
+            _context.Candidates.Remove(candidate); // Cascade delete is configured by EF Core conventions for required relationships
+            await _context.SaveChangesAsync();
+        }
     }
 }
