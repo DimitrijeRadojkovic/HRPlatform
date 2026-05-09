@@ -44,5 +44,35 @@ namespace HRPlatform.Services.Implementations
                 Email = candidate.Email
             };
         }
+        public async Task AddSkillAsync(int candidateId, int skillId)
+        {
+            var candidate = await _context.Candidates
+                .Include(c => c.CandidateSkills)
+                .FirstOrDefaultAsync(c => c.Id == candidateId);
+
+            if (candidate == null)
+                throw new Exception("Candidate not found");
+
+            var skill = await _context.Skills
+                .FirstOrDefaultAsync(s => s.Id == skillId);
+
+            if (skill == null)
+                throw new Exception("Skill not found");
+
+            var exists = await _context.CandidateSkills
+                .AnyAsync(cs => cs.CandidateId == candidateId && cs.SkillId == skillId);
+
+            if (exists)
+                return;
+
+            var candidateSkill = new CandidateSkill
+            {
+                CandidateId = candidateId,
+                SkillId = skillId
+            };
+
+            _context.CandidateSkills.Add(candidateSkill);
+            await _context.SaveChangesAsync();
+        }
     }
 }
