@@ -71,5 +71,27 @@ namespace HRPlatform.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string? name, [FromQuery] string? skills)
+        {
+            try
+            {
+                List<string>? skillList = null;
+
+                if (!string.IsNullOrWhiteSpace(skills))
+                {
+                    skillList = skills.Split(',').ToList();
+                }
+
+                var result = await _candidateService.SearchAsync(name, skillList);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
