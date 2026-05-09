@@ -38,6 +38,28 @@ namespace HRPlatform.Infrastructure.Data
             modelBuilder.Entity<Candidate>()
                 .HasIndex(c => c.Email)
                 .IsUnique();
+
+            modelBuilder.Entity<Skill>().HasData(
+                new Skill { Id = 1, Name = "C#" },
+                new Skill { Id = 2, Name = "Java" },
+                new Skill { Id = 3, Name = "English" }
+            );
+
+            modelBuilder.Entity<Candidate>().HasData(
+                new Candidate
+                {
+                    Id = 1,
+                    FullName = "John Doe",
+                    DateOfBirth = new DateTime(1999, 5, 10, 0, 0, 0, DateTimeKind.Utc),
+                    ContactNumber = "123456",
+                    Email = "john@test.com"
+                }
+            );
+
+            modelBuilder.Entity<CandidateSkill>().HasData(
+                new CandidateSkill { CandidateId = 1, SkillId = 1 },
+                new CandidateSkill { CandidateId = 1, SkillId = 3 }
+            );
         }
     }
 }
