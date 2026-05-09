@@ -1,4 +1,6 @@
 using HRPlatform.Infrastructure.Data;
+using HRPlatform.Services.Implementations;
+using HRPlatform.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
+builder.Services.AddScoped<ICandidateService, CandidateService>();
 
 var app = builder.Build();
 
