@@ -98,5 +98,37 @@ namespace HRPlatform.Services.Implementations
             _context.Candidates.Remove(candidate); // Cascade delete is configured by EF Core conventions for required relationships
             await _context.SaveChangesAsync();
         }
+        public async Task<List<CandidateDto>> SearchAsync(string? name, List<string>? skills)
+        {
+            var query = _context.Candidates
+                .Include(c => c.CandidateSkills)
+                    .ThenInclude(cs => cs.Skill)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(c => c.FullName.Contains(name));
+            }
+
+            if (skills != null && skills.Any())
+            {
+                query = query.Where(c =>
+                    c.CandidateSkills.Any(cs =>
+                        skills.Contains(cs.Skill.Name)
+                    )
+                );
+            }
+
+            var result = await query
+                .Select(c => new CandidateDto
+                {
+                    Id = c.Id,
+                    FullName = c.FullName,
+                    Email = c.Email
+                })
+                .ToListAsync();
+
+            return result;
+        }
     }
 }
