@@ -74,5 +74,18 @@ namespace HRPlatform.Services.Implementations
             _context.CandidateSkills.Add(candidateSkill);
             await _context.SaveChangesAsync();
         }
+        public async Task RemoveSkillAsync(int candidateId, int skillId)
+        {
+            var candidateSkill = await _context.CandidateSkills
+                .FirstOrDefaultAsync(cs =>
+                    cs.CandidateId == candidateId &&
+                    cs.SkillId == skillId);
+
+            if (candidateSkill == null)
+                throw new Exception("Skill not assigned to candidate");
+
+            _context.CandidateSkills.Remove(candidateSkill);
+            await _context.SaveChangesAsync();
+        }
     }
 }
