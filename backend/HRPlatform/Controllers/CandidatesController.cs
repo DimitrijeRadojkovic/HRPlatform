@@ -29,5 +29,19 @@ namespace HRPlatform.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("{candidateId}/skills/{skillId}")]
+        public async Task<IActionResult> AddSkill(int candidateId, int skillId)
+        {
+            try
+            {
+                await _candidateService.AddSkillAsync(candidateId, skillId);
+                return Ok("Skill added to candidate");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
