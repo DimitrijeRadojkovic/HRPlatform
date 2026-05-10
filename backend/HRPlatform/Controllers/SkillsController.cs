@@ -28,6 +28,21 @@ namespace HRPlatform.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var result = await _skillService.GetAllAsync();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

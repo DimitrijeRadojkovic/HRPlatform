@@ -1,4 +1,5 @@
 ﻿using HRPlatform.Domain.Entities;
+using HRPlatform.Dtos;
 using HRPlatform.Dtos.Candidates;
 using HRPlatform.Dtos.Skills;
 using HRPlatform.Infrastructure.Data;
@@ -99,7 +100,11 @@ namespace HRPlatform.Services.Implementations
             _context.Candidates.Remove(candidate); // Cascade delete is configured by EF Core conventions for required relationships
             await _context.SaveChangesAsync();
         }
-        public async Task<List<CandidateDto>> SearchAsync(string? name, List<string>? skills)
+        public async Task<PagedResult<CandidateDetailsDto>> SearchAsync(
+            string? name,
+            List<string>? skills,
+            int page,
+            int pageSize)
         {
             var query = _context.Candidates
                 .Include(c => c.CandidateSkills)
@@ -120,16 +125,35 @@ namespace HRPlatform.Services.Implementations
                 );
             }
 
-            var result = await query
-                .Select(c => new CandidateDto
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new CandidateDetailsDto
                 {
                     Id = c.Id,
                     FullName = c.FullName,
-                    Email = c.Email
+                    Email = c.Email,
+                    DateOfBirth = c.DateOfBirth,
+                    ContactNumber = c.ContactNumber,
+                    Skills = c.CandidateSkills
+                        .Select(cs => new SkillDto
+                        {
+                            Id = cs.Skill.Id,
+                            Name = cs.Skill.Name
+                        })
+                        .ToList()
                 })
                 .ToListAsync();
 
-            return result;
+            return new PagedResult<CandidateDetailsDto>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
         }
         public async Task<List<CandidateDetailsDto>> GetAllAsync(int page, int pageSize)
         {

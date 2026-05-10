@@ -2,12 +2,14 @@ export default function Button({
     text,
     onClick,
     className,
-    animatedBorder = false
+    animatedBorder = false,
+    disabled = false
 } : {
     text: string,
     onClick: () => void | null,
     className?: string,
-    animatedBorder?: boolean
+    animatedBorder?: boolean,
+    disabled?: boolean
 }){
     return (
         <div
@@ -35,7 +37,11 @@ export default function Button({
             `}
         >
             <button
-                onClick={onClick}
+                onClick={() => {
+                    if(!disabled)
+                        onClick()
+                }}
+                disabled={disabled}
                 className={`
                     relative
                     z-10

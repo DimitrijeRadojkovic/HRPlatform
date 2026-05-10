@@ -31,5 +31,14 @@ namespace HRPlatform.Services.Implementations
 
             return new SkillDto { Id = skill.Id, Name = skill.Name };
         }
+
+        public async Task<List<SkillDto>> GetAllAsync()
+        {
+            var skills = await _context.Skills.
+                AsNoTracking().
+                Select(s => new SkillDto { Id = s.Id, Name = s.Name }).ToListAsync();
+
+            return skills;
+        }
     }
 }

@@ -77,6 +77,9 @@ export default function CandidateCard({
                         name={skill.name}
                         showActionIcon={false}
                         isAdd={true}
+                        onAdd={(n:string) => {}}
+                        onRemove={(n:string) => {}}
+                        
                     />
                 ))}
             </div>

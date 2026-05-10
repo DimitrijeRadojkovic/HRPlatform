@@ -1,4 +1,5 @@
-﻿using HRPlatform.Dtos.Candidates;
+﻿using HRPlatform.Dtos;
+using HRPlatform.Dtos.Candidates;
 
 namespace HRPlatform.Services.Interfaces
 {
@@ -8,7 +9,7 @@ namespace HRPlatform.Services.Interfaces
         Task AddSkillAsync(int candidateId, int skillId);
         Task RemoveSkillAsync(int candidateId, int skillId);
         Task DeleteAsync(int id);
-        Task<List<CandidateDto>> SearchAsync(string? name, List<string>? skills);
+        Task<PagedResult<CandidateDetailsDto>> SearchAsync(string? name, List<string>? skills, int page, int pageSize);
         Task<List<CandidateDetailsDto>> GetAllAsync(int page, int pageSize);
     }
 }

@@ -73,7 +73,7 @@ namespace HRPlatform.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> Search([FromQuery] string? name, [FromQuery] string? skills)
+        public async Task<IActionResult> Search([FromQuery] string? name, [FromQuery] string? skills, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace HRPlatform.Controllers
                     skillList = skills.Split(',').ToList();
                 }
 
-                var result = await _candidateService.SearchAsync(name, skillList);
+                var result = await _candidateService.SearchAsync(name, skillList, page, pageSize);
 
                 return Ok(result);
             }

@@ -6,6 +6,7 @@ export default function Nav(){
             className="
             group
             fixed top-[50px]
+            z-[1000]
             lg:left-[200px] lg:right-[200px]
             md:left-[60px] md:right-[60px]
             left-[30px] right-[30px]

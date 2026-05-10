@@ -11,3 +11,11 @@ export type Candidate = {
     dateOfBirth: string
     skills: Skill[]
 }
+
+export type PagedResult = {
+    items: Candidate[],
+    totalCount: number,
+    page: number,
+    pageSize: number,
+    totalPages: number
+}
