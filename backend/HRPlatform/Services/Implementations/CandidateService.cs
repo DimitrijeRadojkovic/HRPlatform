@@ -1,5 +1,6 @@
 ﻿using HRPlatform.Domain.Entities;
 using HRPlatform.Dtos.Candidates;
+using HRPlatform.Dtos.Skills;
 using HRPlatform.Infrastructure.Data;
 using HRPlatform.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -107,7 +108,7 @@ namespace HRPlatform.Services.Implementations
 
             if (!string.IsNullOrWhiteSpace(name))
             {
-                query = query.Where(c => c.FullName.Contains(name));
+                query = query.Where(c => c.FullName.ToLower().Contains(name.ToLower()));
             }
 
             if (skills != null && skills.Any())
@@ -129,6 +130,34 @@ namespace HRPlatform.Services.Implementations
                 .ToListAsync();
 
             return result;
+        }
+        public async Task<List<CandidateDetailsDto>> GetAllAsync(int page, int pageSize)
+        {
+            var candidates = await _context.Candidates
+                .AsNoTracking()
+                .Include(c => c.CandidateSkills)
+                    .ThenInclude(cs => cs.Skill)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new CandidateDetailsDto
+                {
+                    Id = c.Id,
+                    FullName = c.FullName,
+                    DateOfBirth = c.DateOfBirth,
+                    ContactNumber = c.ContactNumber,
+                    Email = c.Email,
+
+                    Skills = c.CandidateSkills
+                        .Select(cs => new SkillDto
+                        {
+                            Id = cs.Skill.Id,
+                            Name = cs.Skill.Name
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+
+            return candidates;
         }
     }
 }

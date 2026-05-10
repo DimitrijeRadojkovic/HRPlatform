@@ -9,5 +9,6 @@ namespace HRPlatform.Services.Interfaces
         Task RemoveSkillAsync(int candidateId, int skillId);
         Task DeleteAsync(int id);
         Task<List<CandidateDto>> SearchAsync(string? name, List<string>? skills);
+        Task<List<CandidateDetailsDto>> GetAllAsync(int page, int pageSize);
     }
 }

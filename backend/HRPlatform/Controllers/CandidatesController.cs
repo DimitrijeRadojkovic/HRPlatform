@@ -93,5 +93,15 @@ namespace HRPlatform.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            var candidates = await _candidateService.GetAllAsync(page, pageSize);
+
+            return Ok(candidates);
+        }
     }
 }
