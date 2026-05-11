@@ -1,8 +1,11 @@
 ﻿using HRPlatform.Domain.Entities;
+using HRPlatform.Dtos;
 using HRPlatform.Dtos.Candidates;
+using HRPlatform.Dtos.Skills;
 using HRPlatform.Infrastructure.Data;
 using HRPlatform.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace HRPlatform.Services.Implementations
 {
@@ -15,8 +18,17 @@ namespace HRPlatform.Services.Implementations
             _context = context;
         }
 
-        public async Task<CandidateDto> CreateAsync(CreateCandidateDto dto)
+        public async Task<CandidateDetailsDto> CreateAsync(CreateCandidateDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.FullName))
+                throw new Exception("Name can't be blank.");
+
+            if (!Regex.IsMatch(dto.Email, @"^[^\s@]+@[^\s@]+\.[^\s@]+$"))
+                throw new Exception("Email is invalid.");
+
+            if (!Regex.IsMatch(dto.ContactNumber, @"^\+?[0-9]{7,15}$"))
+                throw new Exception("Phone number is invalid.");
+
             var emailExists = await _context.Candidates
                 .AnyAsync(c => c.Email == dto.Email);
 
@@ -37,11 +49,14 @@ namespace HRPlatform.Services.Implementations
 
             await _context.SaveChangesAsync();
 
-            return new CandidateDto
+            return new CandidateDetailsDto
             {
                 Id = candidate.Id,
                 FullName = candidate.FullName,
-                Email = candidate.Email
+                Email = candidate.Email,
+                ContactNumber = candidate.ContactNumber,
+                DateOfBirth = candidate.DateOfBirth,
+                Skills = new()
             };
         }
         public async Task AddSkillAsync(int candidateId, int skillId)
@@ -98,7 +113,11 @@ namespace HRPlatform.Services.Implementations
             _context.Candidates.Remove(candidate); // Cascade delete is configured by EF Core conventions for required relationships
             await _context.SaveChangesAsync();
         }
-        public async Task<List<CandidateDto>> SearchAsync(string? name, List<string>? skills)
+        public async Task<PagedResult<CandidateDetailsDto>> SearchAsync(
+            string? name,
+            List<string>? skills,
+            int page,
+            int pageSize)
         {
             var query = _context.Candidates
                 .Include(c => c.CandidateSkills)
@@ -107,28 +126,77 @@ namespace HRPlatform.Services.Implementations
 
             if (!string.IsNullOrWhiteSpace(name))
             {
-                query = query.Where(c => c.FullName.Contains(name));
+                query = query.Where(c => c.FullName.ToLower().Contains(name.ToLower()));
             }
 
             if (skills != null && skills.Any())
             {
                 query = query.Where(c =>
-                    c.CandidateSkills.Any(cs =>
-                        skills.Contains(cs.Skill.Name)
+                    skills.All(skill =>
+                        c.CandidateSkills.Any(cs =>
+                            cs.Skill.Name == skill
+                        )
                     )
                 );
             }
 
-            var result = await query
-                .Select(c => new CandidateDto
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new CandidateDetailsDto
                 {
                     Id = c.Id,
                     FullName = c.FullName,
-                    Email = c.Email
+                    Email = c.Email,
+                    DateOfBirth = c.DateOfBirth,
+                    ContactNumber = c.ContactNumber,
+                    Skills = c.CandidateSkills
+                        .Select(cs => new SkillDto
+                        {
+                            Id = cs.Skill.Id,
+                            Name = cs.Skill.Name
+                        })
+                        .ToList()
                 })
                 .ToListAsync();
 
-            return result;
+            return new PagedResult<CandidateDetailsDto>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+        public async Task<List<CandidateDetailsDto>> GetAllAsync(int page, int pageSize)
+        {
+            var candidates = await _context.Candidates
+                .AsNoTracking()
+                .Include(c => c.CandidateSkills)
+                    .ThenInclude(cs => cs.Skill)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new CandidateDetailsDto
+                {
+                    Id = c.Id,
+                    FullName = c.FullName,
+                    DateOfBirth = c.DateOfBirth,
+                    ContactNumber = c.ContactNumber,
+                    Email = c.Email,
+
+                    Skills = c.CandidateSkills
+                        .Select(cs => new SkillDto
+                        {
+                            Id = cs.Skill.Id,
+                            Name = cs.Skill.Name
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+
+            return candidates;
         }
     }
 }
