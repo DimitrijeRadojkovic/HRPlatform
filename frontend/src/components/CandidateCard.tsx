@@ -42,6 +42,8 @@ export default function CandidateCard({
                 hover:bg-white/15
                 hover:scale-[1.02]
                 hover:shadow-[0_12px_60px_rgba(0,0,0,0.25)]
+
+                flex flex-col justify-between
             "
         >
             {/* Header */}
@@ -70,7 +72,7 @@ export default function CandidateCard({
 
             {/* Skills */}
             <div className="mt-[30px] flex flex-wrap gap-[12px]">
-                {skills.map(skill => (
+                {skills && skills.map(skill => (
                     <SkillPill
                         key={skill.id}
                         id={skill.id}

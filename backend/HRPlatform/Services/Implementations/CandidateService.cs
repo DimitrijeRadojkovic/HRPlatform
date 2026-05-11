@@ -5,6 +5,7 @@ using HRPlatform.Dtos.Skills;
 using HRPlatform.Infrastructure.Data;
 using HRPlatform.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace HRPlatform.Services.Implementations
 {
@@ -17,8 +18,17 @@ namespace HRPlatform.Services.Implementations
             _context = context;
         }
 
-        public async Task<CandidateDto> CreateAsync(CreateCandidateDto dto)
+        public async Task<CandidateDetailsDto> CreateAsync(CreateCandidateDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.FullName))
+                throw new Exception("Name can't be blank.");
+
+            if (!Regex.IsMatch(dto.Email, @"^[^\s@]+@[^\s@]+\.[^\s@]+$"))
+                throw new Exception("Email is invalid.");
+
+            if (!Regex.IsMatch(dto.ContactNumber, @"^\+?[0-9]{7,15}$"))
+                throw new Exception("Phone number is invalid.");
+
             var emailExists = await _context.Candidates
                 .AnyAsync(c => c.Email == dto.Email);
 
@@ -39,11 +49,14 @@ namespace HRPlatform.Services.Implementations
 
             await _context.SaveChangesAsync();
 
-            return new CandidateDto
+            return new CandidateDetailsDto
             {
                 Id = candidate.Id,
                 FullName = candidate.FullName,
-                Email = candidate.Email
+                Email = candidate.Email,
+                ContactNumber = candidate.ContactNumber,
+                DateOfBirth = candidate.DateOfBirth,
+                Skills = new()
             };
         }
         public async Task AddSkillAsync(int candidateId, int skillId)

@@ -19,7 +19,8 @@ export default function Button({
                 p-[3px]
                 overflow-hidden
                 transition-all duration-300
-              
+                w-full
+                md:w-auto
 
                 ${
                     animatedBorder

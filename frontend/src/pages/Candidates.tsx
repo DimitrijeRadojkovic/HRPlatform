@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react"
 import { getCandidates } from "../api/candidates";
 import type { Candidate, Skill } from "../types/types";
-import CandidateCard from "../components/CandidateCard";
 import Nav from "../components/Nav";
 import Search from "../components/Search";
 import { getSkills } from "../api/skills";
 import CandidateCardList from "../components/CandidateCardList";
 import Button from "../components/Button";
 import AddSkillForm from "../components/AddSkillForm";
+import AddCandidateForm from "../components/AddCandidateForm";
 
 export default function Candidates(){
 
@@ -19,6 +19,7 @@ export default function Candidates(){
     const [maxPage, setMaxPage] = useState(0)
 
     const [visibleAddSkill, setVisibleAddSkill] = useState(false)
+    const [visibleAddCandidate, setVisibleAddCandidate] = useState(false)
 
     function addSkill(skill: string) {
         setSelectedSkills(prev =>
@@ -73,8 +74,19 @@ export default function Candidates(){
         <div className="bg-[#4A7DFF] min-h-screen pt-[150px]">
             <Nav />
             <Search addSkill={addSkill} name={searchName} removeSkill={removeSkill} selectedSkills={selectedSkills} setName={(name: string) => setSearchName(name)} skills={skills}  />
-            <div className="max-w-[80%] mx-auto my-[20px]">
+            <div className="max-w-[80%] mx-auto my-[20px] flex md:items-center items-start flex-col md:flex-row">
                 <Button onClick={() => setVisibleAddSkill(true)} text="Add a Skill" className="
+                        w-full
+                        md:w-auto
+                        bg-[#99E3FF]
+                        text-[#002D3D]
+                        text-black/70
+                        font-bold
+                        py-[12px]
+                        hover:bg-[#7edbff]
+                        hover:cursor-pointer
+                    "  />
+                    <Button onClick={() => setVisibleAddCandidate(true)} text="Add a Candidate" className="
                         w-full
                         md:w-auto
                         bg-[#99E3FF]
@@ -87,6 +99,7 @@ export default function Candidates(){
                     "  />
             </div>
             <AddSkillForm visible={visibleAddSkill} setVisible={setVisibleAddSkill} setSkills={setSkills} />
+            <AddCandidateForm visible={visibleAddCandidate} setVisible={setVisibleAddCandidate} setCandidates={setCandidates} />
             <CandidateCardList candidates={candidates} currentPage={currentPage} setCurrentPage={setCurrentPage} maxPage={maxPage}  />
         </div>
     )

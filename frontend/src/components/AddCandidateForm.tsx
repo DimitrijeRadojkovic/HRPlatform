@@ -19,11 +19,34 @@ export default function AddCandidateForm({
     const [contactNumber, setContactNumber] = useState("")
     const [email, setEmail] = useState("")
 
+    function validate() {
+        if (!fullName || !dateOfBirth || !contactNumber || !email) {
+            toast.error("All fields are required")
+            return false
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(email)) {
+            toast.error("Invalid email format")
+            return false
+        }
+
+        const phoneRegex = /^\+?[0-9]{7,15}$/
+        if (!phoneRegex.test(contactNumber)) {
+            toast.error("Invalid phone number")
+            return false
+        }
+
+        return true
+    }
+
     async function handleCreateCandidate() {
+        if (!validate()) return
+
         try {
             const dto = {
                 fullName,
-                dateOfBirth,
+                dateOfBirth: new Date(dateOfBirth).toISOString(),
                 contactNumber,
                 email
             }
@@ -125,6 +148,7 @@ export default function AddCandidateForm({
                         hover:bg-[#7edbff]
                         hover:cursor-pointer
                     "
+                    disabled={!fullName || !dateOfBirth || !contactNumber || !email}
                 />
             </div>
         </div>

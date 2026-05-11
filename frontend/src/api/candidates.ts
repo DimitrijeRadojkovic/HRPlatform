@@ -22,7 +22,7 @@ export async function getCandidates(name: string, skills: string[], page = 1, pa
 }
 
 export async function createCandidate(data: any) {
-    const res = await fetch("/api/candidates", {
+    const res = await fetch("https://localhost:7049/api/candidates", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -30,7 +30,10 @@ export async function createCandidate(data: any) {
         body: JSON.stringify(data)
     })
 
-    if (!res.ok) throw new Error("Failed")
+    if (!res.ok){ 
+        console.log("GRESKA U CREATE CANDIDATE", res)
+        throw new Error("Failed")
+    }
 
     return await res.json()
 }
