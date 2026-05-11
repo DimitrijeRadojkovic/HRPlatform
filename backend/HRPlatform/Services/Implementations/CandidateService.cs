@@ -132,8 +132,10 @@ namespace HRPlatform.Services.Implementations
             if (skills != null && skills.Any())
             {
                 query = query.Where(c =>
-                    c.CandidateSkills.Any(cs =>
-                        skills.Contains(cs.Skill.Name)
+                    skills.All(skill =>
+                        c.CandidateSkills.Any(cs =>
+                            cs.Skill.Name == skill
+                        )
                     )
                 );
             }

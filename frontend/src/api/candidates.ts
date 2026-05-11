@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL
+
 export async function getCandidates(name: string, skills: string[], page = 1, pageSize = 10) {
     const skillsQuery = skills.join(",")
 
@@ -8,9 +10,8 @@ export async function getCandidates(name: string, skills: string[], page = 1, pa
         pageSize: pageSize.toString()
     })
 
-    console.log(`https://localhost:7049/api/candidates/search?${params.toString()}`)
     const response = await fetch(
-        `https://localhost:7049/api/candidates/search?${params.toString()}`
+        `${API_URL}/candidates/search?${params.toString()}`
     )
 
 
@@ -22,7 +23,7 @@ export async function getCandidates(name: string, skills: string[], page = 1, pa
 }
 
 export async function createCandidate(data: any) {
-    const res = await fetch("https://localhost:7049/api/candidates", {
+    const res = await fetch(`${API_URL}/candidates`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -36,4 +37,45 @@ export async function createCandidate(data: any) {
     }
 
     return await res.json()
+}
+
+export async function addSkillToCandidate(candidateId: number, skillId: number) {
+    const res = await fetch(
+        `${API_URL}/candidates/${candidateId}/skills/${skillId}`,
+        {
+            method: "POST"
+        }
+    )
+
+    if (!res.ok) {
+        throw new Error(await res.text())
+    }
+}
+
+export async function removeSkillFromCandidate(candidateId: number, skillId: number) {
+    const res = await fetch(
+        `${API_URL}/candidates/${candidateId}/skills/${skillId}`,
+        {
+            method: "DELETE"
+        }
+    )
+
+    if (!res.ok) {
+        console.log("ERROR RESPONSE U REMOVE SKILL", res)
+        throw new Error(await res.text())
+    }
+}
+
+export async function deleteCandidate(candidateId: number){
+    const res = await fetch(
+        `${API_URL}/candidates/${candidateId}`,
+        {
+            method: "DELETE"
+        }
+    )
+
+    if (!res.ok) {
+        console.log("ERROR RESPONSE U REMOVE CANDIDATE", res)
+        throw new Error(await res.text())
+    }
 }

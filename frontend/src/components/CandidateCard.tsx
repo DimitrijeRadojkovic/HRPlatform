@@ -12,14 +12,18 @@ export default function CandidateCard({
     email,
     contactNumber,
     dateOfBirth,
-    skills
+    skills,
+    onModify,
+    onRemove
 }: {
     id: number
     fullName: string
     email: string
     contactNumber: string
     dateOfBirth: string
-    skills: Skill[]
+    skills: Skill[],
+    onModify: () => void,
+    onRemove: () => void
 }) {
     return (
         <div
@@ -90,7 +94,7 @@ export default function CandidateCard({
             <div className="mt-[36px] flex flex-col  gap-[14px]">
                 <Button
                     text="Modify Skills"
-                    onClick={() => {}}
+                    onClick={onModify}
                     className="
                         flex-1
                         w-full
@@ -106,7 +110,7 @@ export default function CandidateCard({
 
                 <Button
                     text="Remove"
-                    onClick={() => {}}
+                    onClick={onRemove}
                     animatedBorder={false}
                     className="
                         flex-1

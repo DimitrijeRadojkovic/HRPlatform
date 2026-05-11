@@ -8,6 +8,8 @@ import CandidateCardList from "../components/CandidateCardList";
 import Button from "../components/Button";
 import AddSkillForm from "../components/AddSkillForm";
 import AddCandidateForm from "../components/AddCandidateForm";
+import ModifyCandidateSkillsModal from "../components/ModifyCandidateSkillsModal";
+import RemoveCandidateModal from "../components/RemoveCandidateModal";
 
 export default function Candidates(){
 
@@ -20,6 +22,11 @@ export default function Candidates(){
 
     const [visibleAddSkill, setVisibleAddSkill] = useState(false)
     const [visibleAddCandidate, setVisibleAddCandidate] = useState(false)
+
+    const [visibleModifySkills, setVisibleModifySkills] = useState(false)
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
+
+    const [visibleRemoveCandidate, setVisibleRemoveCandidate] = useState(false)
 
     function addSkill(skill: string) {
         setSelectedSkills(prev =>
@@ -100,7 +107,20 @@ export default function Candidates(){
             </div>
             <AddSkillForm visible={visibleAddSkill} setVisible={setVisibleAddSkill} setSkills={setSkills} />
             <AddCandidateForm visible={visibleAddCandidate} setVisible={setVisibleAddCandidate} setCandidates={setCandidates} />
-            <CandidateCardList candidates={candidates} currentPage={currentPage} setCurrentPage={setCurrentPage} maxPage={maxPage}  />
+            <ModifyCandidateSkillsModal
+                visible={visibleModifySkills}
+                setVisible={setVisibleModifySkills}
+                candidate={selectedCandidate!}
+                allSkills={skills}
+                setCandidates={setCandidates}
+            />
+            <RemoveCandidateModal 
+                visible={visibleRemoveCandidate}
+                setVisible={setVisibleRemoveCandidate}
+                candidateId={selectedCandidate?.id!}
+                setCandidates={setCandidates}
+            />
+            <CandidateCardList setSelectedCandidate={setSelectedCandidate} setVisibleModifySkills={setVisibleModifySkills} setVisibleRemoveCandidate={setVisibleRemoveCandidate} candidates={candidates} currentPage={currentPage} setCurrentPage={setCurrentPage} maxPage={maxPage}  />
         </div>
     )
 }

@@ -1,6 +1,8 @@
+const API_URL = import.meta.env.VITE_API_URL
+
 export async function getSkills(){
     const response = await fetch(
-        `https://localhost:7049/api/skills`
+        `${API_URL}/skills`
     )
 
     if (!response.ok) {
@@ -12,7 +14,7 @@ export async function getSkills(){
 
 export async function createSkill(name: string) {
     const response = await fetch(
-        `https://localhost:7049/api/skills`,
+        `${API_URL}/skills`,
         {
             method: "POST",
             headers: {
