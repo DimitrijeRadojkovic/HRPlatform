@@ -6,6 +6,8 @@ import Nav from "../components/Nav";
 import Search from "../components/Search";
 import { getSkills } from "../api/skills";
 import CandidateCardList from "../components/CandidateCardList";
+import Button from "../components/Button";
+import AddSkillForm from "../components/AddSkillForm";
 
 export default function Candidates(){
 
@@ -15,6 +17,8 @@ export default function Candidates(){
     const [currentPage, setCurrentPage] = useState(1)
     const [skills, setSkills] = useState<Skill[]>([])
     const [maxPage, setMaxPage] = useState(0)
+
+    const [visibleAddSkill, setVisibleAddSkill] = useState(false)
 
     function addSkill(skill: string) {
         setSelectedSkills(prev =>
@@ -69,6 +73,20 @@ export default function Candidates(){
         <div className="bg-[#4A7DFF] min-h-screen pt-[150px]">
             <Nav />
             <Search addSkill={addSkill} name={searchName} removeSkill={removeSkill} selectedSkills={selectedSkills} setName={(name: string) => setSearchName(name)} skills={skills}  />
+            <div className="max-w-[80%] mx-auto my-[20px]">
+                <Button onClick={() => setVisibleAddSkill(true)} text="Add a Skill" className="
+                        w-full
+                        md:w-auto
+                        bg-[#99E3FF]
+                        text-[#002D3D]
+                        text-black/70
+                        font-bold
+                        py-[12px]
+                        hover:bg-[#7edbff]
+                        hover:cursor-pointer
+                    "  />
+            </div>
+            <AddSkillForm visible={visibleAddSkill} setVisible={setVisibleAddSkill} setSkills={setSkills} />
             <CandidateCardList candidates={candidates} currentPage={currentPage} setCurrentPage={setCurrentPage} maxPage={maxPage}  />
         </div>
     )

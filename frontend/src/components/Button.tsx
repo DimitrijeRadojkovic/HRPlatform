@@ -6,7 +6,7 @@ export default function Button({
     disabled = false
 } : {
     text: string,
-    onClick: () => void | null,
+    onClick: () => void | Promise<void>,
     className?: string,
     animatedBorder?: boolean,
     disabled?: boolean
@@ -19,6 +19,7 @@ export default function Button({
                 p-[3px]
                 overflow-hidden
                 transition-all duration-300
+              
 
                 ${
                     animatedBorder
@@ -31,6 +32,14 @@ export default function Button({
 
                         hover:scale-105
                         hover:shadow-[0_0_35px_rgba(153,227,255,0.7)]
+                    `
+                    : ""
+                }
+
+                ${
+                    disabled
+                    ? `
+                        opacity-[20%]
                     `
                     : ""
                 }

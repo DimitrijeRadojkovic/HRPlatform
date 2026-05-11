@@ -20,3 +20,17 @@ export async function getCandidates(name: string, skills: string[], page = 1, pa
 
     return response.json()
 }
+
+export async function createCandidate(data: any) {
+    const res = await fetch("/api/candidates", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+
+    if (!res.ok) throw new Error("Failed")
+
+    return await res.json()
+}

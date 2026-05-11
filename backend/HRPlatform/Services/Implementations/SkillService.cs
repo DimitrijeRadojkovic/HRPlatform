@@ -22,6 +22,10 @@ namespace HRPlatform.Services.Implementations
             {
                 throw new Exception("Skill with name " +  skillDto.Name + " already exists.");
             }
+            if(skillDto.Name == "")
+            {
+                throw new Exception("Name can't be blank.");
+            }
 
             var skill = new Skill { Name = skillDto.Name };
 
@@ -39,6 +43,18 @@ namespace HRPlatform.Services.Implementations
                 Select(s => new SkillDto { Id = s.Id, Name = s.Name }).ToListAsync();
 
             return skills;
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var skill = await _context.Skills
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (skill == null)
+                throw new Exception("Skill not found");
+
+            _context.Skills.Remove(skill); // Cascade delete is configured by EF Core conventions for required relationships
+            await _context.SaveChangesAsync();
         }
     }
 }

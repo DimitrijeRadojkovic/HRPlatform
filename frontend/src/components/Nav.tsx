@@ -5,7 +5,7 @@ export default function Nav(){
         <div
             className="
             group
-            fixed top-[50px]
+            absolute top-[50px]
             z-[1000]
             lg:left-[200px] lg:right-[200px]
             md:left-[60px] md:right-[60px]

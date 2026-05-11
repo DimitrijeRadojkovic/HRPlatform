@@ -85,12 +85,13 @@ export default function CandidateCard({
             </div>
 
             {/* Actions */}
-            <div className="mt-[36px] flex flex-col md:flex-row gap-[14px]">
+            <div className="mt-[36px] flex flex-col  gap-[14px]">
                 <Button
                     text="Modify Skills"
                     onClick={() => {}}
                     className="
                         flex-1
+                        w-full
                         bg-[#99E3FF]
                         text-[#002D3D]
                         text-black/70
@@ -107,6 +108,7 @@ export default function CandidateCard({
                     animatedBorder={false}
                     className="
                         flex-1
+                        w-full
                         bg-[#FF6B81]
                         text-white
                         font-bold

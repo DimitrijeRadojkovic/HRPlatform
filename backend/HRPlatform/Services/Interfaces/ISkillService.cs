@@ -6,5 +6,6 @@ namespace HRPlatform.Services.Interfaces
     {
         Task<SkillDto> CreateSkillDtoAsync(CreateSkillDto skillDto);
         Task<List<SkillDto>> GetAllAsync();
+        Task DeleteAsync(int id);
     }
 }
